@@ -6,6 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.require_version ">= 1.5.0"
 
+# a virtual IP is using in heartbeat as 192.168.79.60
 pxc_nodes = {
   'node1' => {
     'local_vm_ip' => '192.168.70.61',
@@ -58,7 +59,8 @@ node_config.vm.provision :chef_client do |chef|
     chef.validation_client_name = 'chef-validator'
     chef.node_name = name
     chef.run_list = [
-        "recipe[percona-xtradb-cluster]"
+        "recipe[heartbeat]"
+        #"recipe[percona-xtradb-cluster]"
     ]
  end
 
