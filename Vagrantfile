@@ -29,10 +29,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
  config.hostmanager.enabled = true # Disable for AWS
  config.hostmanager.include_offline = true
+ config.hostmanager.ignore_private_ip = false
+ config.hostmanager.manage_host = true
 
  pxc_nodes.each_pair { |name, node_params|
-    config.vm.hostname = name
     config.vm.define name do |node_config|
+      node_config.vm.hostname = name
       node_config.vm.network :private_network, ip: node_params['local_vm_ip']
 
       node_config.vm.provision :hostmanager
@@ -52,6 +54,7 @@ node_config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtu
 node_config.vm.provision :chef_client do |chef|
     chef.json = {
     }
+    chef.custom_config_path = "Vagrantfile.chef"
 
     chef.provisioning_path = "/etc/chef"
     chef.chef_server_url = 'https://chef.faria.co:443'
@@ -59,7 +62,8 @@ node_config.vm.provision :chef_client do |chef|
     chef.validation_client_name = 'chef-validator'
     chef.node_name = name
     chef.run_list = [
-        "recipe[heartbeat]"
+        "role[database_percona]",
+        "recipe[test-heartbeat]"
         #"recipe[percona-xtradb-cluster]"
     ]
  end
