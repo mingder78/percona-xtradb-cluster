@@ -63,7 +63,8 @@ node_config.vm.provision :chef_client do |chef|
     chef.node_name = name
     chef.run_list = [
         "role[database_percona]",
-        "recipe[test-heartbeat]"
+        "recipe[test-heartbeat]",
+        "recipe[faria-rails::percona]"
         #"recipe[percona-xtradb-cluster]"
     ]
  end
